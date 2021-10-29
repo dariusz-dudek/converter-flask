@@ -7,8 +7,7 @@ load_dotenv()
 
 
 def init_app(app):
-    app.teardown_appcontect(close_connection)
-
+    app.teardown_appcontext(close_connection)
 
 def get_connection():
     if 'connection' not in g:

@@ -5,6 +5,7 @@ from hashlib import pbkdf2_hmac
 from flask_login import login_user, logout_user, login_required
 
 
+@login_required
 def index():
     return render_template('public/index.html.jinja2')
 
@@ -31,7 +32,7 @@ def register():
 
         flash('Account created!', 'success')
         repository.add(username, crypted_password, name)
-        return redirect('/')
+        return redirect('/login')
 
     return render_template('public/register.html.jinja2', form=form)
 
@@ -52,6 +53,11 @@ def login():
             abort(400)
 
     return render_template('public/login.html.jinja2', form=form)
+
+
+def logout():
+    logout_user()
+    return redirect('/login')
 
 
 def crypt_password(password):

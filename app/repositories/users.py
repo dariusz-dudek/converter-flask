@@ -15,6 +15,7 @@ class UserRepository:
         user.password = row['password']
         user.name = row['name']
         user.admin = row['admin']
+        return user
 
     def get_by_username(self, username):
         self.cursor.execute(
