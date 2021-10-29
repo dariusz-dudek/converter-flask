@@ -1,7 +1,8 @@
-from flask import render_template, request, redirect, flash
-from app.repositories.forms import RegisterForm
+from flask import render_template, request, redirect, flash, abort
+from app.repositories.forms import RegisterForm, LoginForm
 from app.repositories.users import UserRepository
 from hashlib import pbkdf2_hmac
+from flask_login import login_user, logout_user, login_required
 
 
 def index():
@@ -30,9 +31,27 @@ def register():
 
         flash('Account created!', 'success')
         repository.add(username, crypted_password, name)
-        return redirect(request.url)
+        return redirect('/')
 
     return render_template('public/register.html.jinja2', form=form)
+
+
+def login():
+    form = LoginForm(request.form)
+    if request.method == 'POST' and form.validate():
+        username = form.username.data
+        crypted_password = crypt_password(form.password.data)
+
+        repository = UserRepository()
+        user = repository.get_by_username(username)
+
+        if user.password == crypted_password:
+            login_user(user)
+            return redirect('/')
+        else:
+            abort(400)
+
+    return render_template('public/login.html.jinja2', form=form)
 
 
 def crypt_password(password):
