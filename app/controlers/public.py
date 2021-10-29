@@ -21,22 +21,17 @@ def register():
     if request.method == 'POST' and form.validate():
         username = request.form.get('username')
         name = request.form.get('name')
-        cryptded_password = crypt_password(request.form.get('password'))
-        print(f'Username: {username}\nName: {name}\nPassword: {cryptded_password}')
+        crypted_password = crypt_password(request.form.get('password'))
         repository = UserRepository()
 
         if username in repository.get_all_usernames():
-            flash(f'The username {username} already exist. Choice another one.', 'warning')
-            print('Already exists')
+            flash(f'The username {username} already exist.\nChoice another one.', 'warning')
             return redirect(request.url)
 
         flash('Account created!', 'success')
+        repository.add(username, crypted_password, name)
         return redirect(request.url)
-        # try:
-        #     repository.add(username, password, name)
-        #     return redirect(request.url)
-        # except errors.lookup(UNIQUE_VIOLATION) as e:
-        #     print(e)
+
     return render_template('public/register.html.jinja2', form=form)
 
 
@@ -45,9 +40,8 @@ def crypt_password(password):
     password = pbkdf2_hmac(
         'sha256',
         password.encode('utf-8'),
-        salt,
+        salt.encode('utf-8'),
         999
     )
     return password.hex()
-
 
