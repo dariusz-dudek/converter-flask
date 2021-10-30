@@ -1,8 +1,10 @@
-from flask import render_template, request, redirect, flash, abort
+from flask import render_template, request, redirect, flash, abort, url_for
 from app.repositories.forms import RegisterForm, LoginForm
 from app.repositories.users import UserRepository
 from hashlib import pbkdf2_hmac
 from flask_login import login_user, logout_user, login_required
+from os.path import splitext, join
+from app import app
 
 
 @login_required
@@ -69,4 +71,33 @@ def crypt_password(password):
         999
     )
     return password.hex()
+
+
+@login_required
+def converter():
+    option = request.form['options']
+    print(option)
+    if request.method == 'POST':
+        if request.files:
+            uploaded_file = request.files['file']
+            if int(request.cookies['filesize']) > app.config['MAX_CONTENT_LENGTH']:
+                return abort(400)
+            if uploaded_file.filename == '':
+                return redirect(url_for('converter'))
+            file_ext = splitext(uploaded_file.filename)[1]
+            if file_ext not in app.config['UPLOAD_EXTENSIONS']:
+                return abort(400)
+            uploaded_file.save(join(app.config['UPLOAD_PATH'], uploaded_file.filename))
+            print(converter_method(option))
+
+    return render_template('public/converter.html.jinja2')
+
+def converter_method(method):
+    match method:
+        case 'mag_krak_xls':
+            return f'I run {method}'
+        case 'raw_pol_csv':
+            return f'I run {method}'
+        case 'sewera_csv':
+            return f'I run {method}'
 

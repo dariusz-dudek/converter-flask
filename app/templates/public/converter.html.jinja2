@@ -1,0 +1,55 @@
+{% extends 'public/templates/public_template.html.jinja2' %}
+
+{% block title %}Converter{% endblock %}
+
+{% block main %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1>Converter</h1>
+                <hr>
+                <form action="/converter" method="POST" enctype="multipart/form-data">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="options" id="mag_krak_xls" value="mag_krak_xls">
+                        <label class="form-check-label" for="mag_krak_xls">
+                            Mag Krak xls
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="options" id="raw_pol_csv" value="raw_pol_csv">
+                        <label class="form-check-label" for="raw_pol_csv">
+                            Raw Pol csv
+                        </label>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="options" id="sewera_csv" value="sewera_csv">
+                        <label class="form-check-label" for="sewera_csv">
+                            Sewera csv
+                        </label>
+                    </div>
+
+                    <div>
+                        <label for="file" class="form-label">Choice file</label>
+                        <input class="form-control form-control-lg" id="file" type="file" name="file">
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-primary">Load</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scropt %}
+    <script>
+        function filesize(elem) {
+
+            document.cookie = `filesize=${elem.files[0].size}`
+
+        }
+    </script>
+{% endblock %}
