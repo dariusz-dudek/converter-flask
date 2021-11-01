@@ -1,5 +1,5 @@
 from app import app
-from app.controlers.public import index, about, register, login, logout, converter
+from app.controlers.public import index, about, register, login, logout, converter, upload
 from app.controlers.admin import admin_dashboard
 from flask_login import LoginManager
 from app.repositories.users import UserRepository
@@ -22,4 +22,5 @@ app.add_url_rule('/register', view_func=register, methods=['POST', 'GET'])
 app.add_url_rule('/login', view_func=login, methods=['POST', 'GET'])
 app.add_url_rule('/logout', view_func=logout, methods=['GET'])
 app.add_url_rule('/converter', view_func=converter, methods=['POST', 'GET'])
+app.add_url_rule('/upload/<filename>', view_func=upload, methods=['POST', 'GET'])
 

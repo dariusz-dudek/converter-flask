@@ -1,4 +1,11 @@
-from flask import render_template, request, redirect, flash, abort, url_for
+from flask import render_template, request, redirect, flash, abort, url_for, send_from_directory
+from app.converter.containers.xml_template_classes_full_classes import DocumentInvoice
+from app.converter.add_function import AddFunction
+
+from app.converter.converter_method.excel_mag_krak import MagKrak
+from app.converter.converter_method.raw_pol import Rawpol
+from app.converter.converter_method.sewera_csv import Sewera
+
 from app.repositories.forms import RegisterForm, LoginForm
 from app.repositories.users import UserRepository
 from hashlib import pbkdf2_hmac
@@ -80,24 +87,41 @@ def converter():
     if request.method == 'POST':
         if request.files:
             uploaded_file = request.files['file']
-            if int(request.cookies['filesize']) > app.config['MAX_CONTENT_LENGTH']:
-                return abort(400)
             if uploaded_file.filename == '':
                 return redirect(url_for('converter'))
             file_ext = splitext(uploaded_file.filename)[1]
             if file_ext not in app.config['UPLOAD_EXTENSIONS']:
                 return abort(400)
-            uploaded_file.save(join(app.config['UPLOAD_PATH'], uploaded_file.filename))
-            print(converter_method(option))
+            uploaded_file.save(join(app.config['UPLOAD_PATH'], f'input{file_ext}'))
+            converter_method(option, file_ext)
+            return send_from_directory(app.config['RESULT'], f'{option}.xml', as_attachment=True)
 
     return render_template('public/converter.html.jinja2')
 
-def converter_method(method):
-    match method:
-        case 'mag_krak_xls':
-            return f'I run {method}'
-        case 'raw_pol_csv':
-            return f'I run {method}'
-        case 'sewera_csv':
-            return f'I run {method}'
+def upload(filename):
+    print(filename)
+    return send_from_directory(app.config['RESULT'], filename, as_attachment=True)
 
+@app.errorhandler(413)
+def too_large(e):
+    return 'File is too large', 413
+
+
+def converter_method(method, ext):
+    xml_document = DocumentInvoice()
+    match method:
+
+        case 'mag_krak_xls':
+            mag_krak = MagKrak()
+            answer = AddFunction.load_file(mag_krak, xml_document, method, ext)
+            print(answer)
+
+        case 'raw_pol_csv':
+            raw_pol = Rawpol()
+            answer = AddFunction.load_file(raw_pol, xml_document, method, ext)
+            print(answer)
+
+        case 'sewera_csv':
+            sewera = Sewera()
+            answer = AddFunction.load_file(sewera, xml_document, method, ext)
+            print(answer)

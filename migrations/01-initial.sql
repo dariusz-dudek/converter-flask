@@ -5,3 +5,10 @@ CREATE TABLE users (
     name varchar,
     admin integer not null
 );
+
+CREATE TABLE company (
+    id SERIAL PRIMARY KEY,
+    nip varchar(10) not null ,
+    name varchar not null ,
+    iln varchar(13) not null
+);
