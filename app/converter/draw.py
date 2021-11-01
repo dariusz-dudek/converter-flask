@@ -260,4 +260,3 @@ def draw_xml(filename, xml_document):
     tree = ET.ElementTree(document_invoice)
 
     tree.write(filename, encoding='UTF-8', short_empty_elements=False)
-    print(f'Operacja zakończyła się sukcesem.\nUtworzono plik {filename}.')

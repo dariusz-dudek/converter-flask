@@ -9,4 +9,3 @@ app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
 app.config['UPLOAD_EXTENSIONS'] = ['.csv', '.xls', '.xml', '.xlsx']
 app.config['UPLOAD_PATH'] = 'app/static/uploaded_files'
 app.config['RESULT'] = 'static/result'
-

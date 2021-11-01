@@ -133,3 +133,4 @@ app/static/img
 node_modules
 app/static/result
 app/static/uploaded_files
+/app/static/uploaded_files/
